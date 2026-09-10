@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { branches } from '../data/branches'
+import { useFetch } from '../hooks/useFetch'
+import type { Branch } from '../types'
 
 export function Header() {
+  const { data: branches } = useFetch<Branch[]>(`${import.meta.env.VITE_API_URL}/branches`)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isBranchMenuOpen, setIsBranchMenuOpen] = useState(false)
 
@@ -30,7 +32,7 @@ export function Header() {
 
             {isBranchMenuOpen && (
               <div className="absolute top-full left-0 mt-2 bg-white rounded shadow-lg overflow-hidden min-w-[200px]">
-                {branches.map((branch) => (
+                {branches?.map((branch) => (
                   <Link
                     key={branch.id}
                     to={`/unidades/${branch.id}`}
@@ -67,7 +69,7 @@ export function Header() {
         <div className="md:hidden flex flex-col gap-4 px-6 pb-6 text-white text-sm">
           <a href="#servicos">Serviços</a>
           <a href="#processo">Como funciona</a>
-          {branches.map((branch) => (
+          {branches?.map((branch) => (
             <Link key={branch.id} to={`/unidades/${branch.id}`}>
               {branch.name}
             </Link>

@@ -1,16 +1,20 @@
 import { Link } from 'react-router-dom'
-import { branches } from '../data/branches'
+import { useFetch } from '../hooks/useFetch'
+import type { Branch } from '../types'
 
 export function BranchSelector() {
+  const { data: branches, loading, error } = useFetch<Branch[]>(
+    `${import.meta.env.VITE_API_URL}/branches`
+  )
+
+  if (loading) return <main className="min-h-screen bg-[#060F3A] flex items-center justify-center text-white">Carregando...</main>
+  if (error || !branches) return <main className="min-h-screen bg-[#060F3A] flex items-center justify-center text-white">Erro ao carregar unidades.</main>
+
   return (
     <main className="min-h-screen bg-[#060F3A] flex items-center justify-center px-6">
       <div className="max-w-4xl w-full text-center">
-        <h1 className="text-white text-3xl md:text-4xl font-bold mb-3">
-          Escolha sua unidade
-        </h1>
-        <p className="text-[#AEB4CE] mb-12">
-          Selecione a unidade mais próxima de você para continuar
-        </p>
+        <h1 className="text-white text-3xl md:text-4xl font-bold mb-3">Escolha sua unidade</h1>
+        <p className="text-[#AEB4CE] mb-12">Selecione a unidade mais próxima de você para continuar</p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {branches.map((branch) => (
@@ -18,11 +22,7 @@ export function BranchSelector() {
               key={branch.id}
               to={`/unidades/${branch.id}`}
               className="group relative h-64 rounded-lg overflow-hidden block"
-              style={{
-                backgroundImage: `url(${branch.coverImage})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-              }}
+              style={{ backgroundImage: `url(${branch.coverImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
             >
               <div className="absolute inset-0 bg-black/50 group-hover:bg-black/30 transition-colors flex flex-col items-center justify-center">
                 <h2 className="text-white text-2xl font-bold">{branch.name}</h2>
